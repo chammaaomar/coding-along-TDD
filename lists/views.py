@@ -4,4 +4,7 @@ from django.http import HttpResponse
 
 
 def home_page(request):
-    return render(request, 'home.html')
+    # default value '' for GET request
+    return render(request, 'home.html', {
+        'new_item_text': request.POST.get('item_text', ''),
+    })

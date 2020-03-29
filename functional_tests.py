@@ -39,9 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         # and the page lists "1: buy gopher plush" as in item in a to-do list
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Buy Gopher plush' for row in rows)
-        )
+        self.assertIn('1: Buy Gopher plush', [row.text for row in rows])
         # There is still a textbox inviting the user to enter text
         # they enter "buy python shirt"
         self.fail('Finish the test!')
