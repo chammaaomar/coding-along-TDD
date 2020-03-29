@@ -2,3 +2,5 @@ db.sqlite3
 tdd-env
 .mypy_cache/
 .vscode/
+superlists/__pycache__/
+*.pyc
