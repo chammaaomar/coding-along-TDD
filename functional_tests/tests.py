@@ -1,8 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import WebDriverException
 import unittest
 from django.test import LiveServerTestCase
 import time
+
+MAX_WAIT = 10
 
 
 class NewVisitorTest(LiveServerTestCase):
@@ -17,14 +20,20 @@ class NewVisitorTest(LiveServerTestCase):
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys(item_text)
         input_box.send_keys(Keys.ENTER)
-        time.sleep(3)
 
     def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text.strip() for row in rows])
+        start_time = time.time()
+        try:
+            table = self.browser.find_element_by_id('id_list_table')
+            rows = table.find_elements_by_tag_name('tr')
+            self.assertIn(row_text, [row.text.strip() for row in rows])
+            return
+        except (AssertionError, WebDriverException) as e:
+            if time.time() - start_time > MAX_WAIT:
+                raise e
+            time.sleep(0.5)
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def test_can_start_a_list_for_one_user(self):
         # name has to start with test to run by test runner
         # User opens to-do list website
         self.browser.get(self.live_server_url)
@@ -58,6 +67,30 @@ class NewVisitorTest(LiveServerTestCase):
         self.check_for_row_in_list_table(
             '2: Implement Redis using Go coroutines')
 
-        self.fail('Finish the test!')
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        # Omar logs on to create a new list and really wants to buy
+        # a Gopher plush
+        self.browser.get(self.live_server_url)
+        self.input_item('Buy Gopher plush')
+        self.check_for_row_in_list_table('1: Buy Gopher plush')
+        omar_url = self.browser.current_url
+        self.assertRegex(omar_url, '/lists/.+')
+        # Another user logs in, Sara, and she really wants to buy
+        # a Smoko potato lamp, but doesn't share any relation to Omar
+        # she gets her own unique URL
 
-    # the site has generated a unique URL for the user, they can visit it for persistance
+        self.browser.quit()
+        # re-initialize
+        self.browser = webdriver.Safari()
+
+        self.browser.get(self.live_server_url)
+        self.input_item('Buy Smoko potato lamp')
+        self.check_for_row_in_list_table('1: Buy Smoko potato lamp')
+        sara_url = self.browser.current_url
+        self.assertRegex(sara_url, '/lists/.+')
+        self.assertNotEqual(omar_url, sara_url)
+
+        # and she doesn't see his items
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy Gopher plush', page_text)
+        self.assertIn('Buy Smoko potato lamp', page_text)
