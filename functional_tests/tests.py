@@ -23,15 +23,16 @@ class NewVisitorTest(LiveServerTestCase):
 
     def check_for_row_in_list_table(self, row_text):
         start_time = time.time()
-        try:
-            table = self.browser.find_element_by_id('id_list_table')
-            rows = table.find_elements_by_tag_name('tr')
-            self.assertIn(row_text, [row.text.strip() for row in rows])
-            return
-        except (AssertionError, WebDriverException) as e:
-            if time.time() - start_time > MAX_WAIT:
-                raise e
-            time.sleep(0.5)
+        while True:
+            try:
+                table = self.browser.find_element_by_id('id_list_table')
+                rows = table.find_elements_by_tag_name('tr')
+                self.assertIn(row_text, [row.text.strip() for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
 
     def test_can_start_a_list_for_one_user(self):
         # name has to start with test to run by test runner
@@ -77,20 +78,22 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertRegex(omar_url, '/lists/.+')
         # Another user logs in, Sara, and she really wants to buy
         # a Smoko potato lamp, but doesn't share any relation to Omar
-        # she gets her own unique URL
 
         self.browser.quit()
         # re-initialize
         self.browser = webdriver.Safari()
-
         self.browser.get(self.live_server_url)
+        # and she doesn't see Omar's items
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy Gopher plush', page_text)
+        self.assertNotIn('Implement Redis using Go coroutines', page_text)
+
         self.input_item('Buy Smoko potato lamp')
         self.check_for_row_in_list_table('1: Buy Smoko potato lamp')
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy Gopher plush', page_text)
+
+        # after entering her list, she gets her own unique URL
         sara_url = self.browser.current_url
         self.assertRegex(sara_url, '/lists/.+')
         self.assertNotEqual(omar_url, sara_url)
-
-        # and she doesn't see his items
-        page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('Buy Gopher plush', page_text)
-        self.assertIn('Buy Smoko potato lamp', page_text)
