@@ -13,22 +13,6 @@ class HomePageTest(TestCase):
         # check what template was used to render the response
         self.assertTemplateUsed(response, 'home.html')
 
-    def test_can_save_a_POST_request(self):
-        # for every unit test case, Django sets up a database instance
-        response = self.client.post('/', data={'item_text': 'A new list item'})
-        self.assertEqual(Item.objects.count(), 1)
-        self.assertEqual(Item.objects.first().text, 'A new list item')
-
-    def test_redirect_after_POST(self):
-        # redirect after a POST request to allow safe refresh
-        response = self.client.post('/', data={'item_text': 'A new list item'})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/unique-list/')
-
-    def test_only_saves_items_when_needed(self):
-        self.client.get('/')
-        self.assertEqual(Item.objects.count(), 0)
-
 
 class ItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
@@ -63,3 +47,19 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'Item 1')
         # equivalent, but more convenient
         self.assertContains(response, 'Item 2')
+
+
+class NewListTest(TestCase):
+    def test_can_save_a_POST_request(self):
+        # for every unit test case, Django sets up a database instance
+        response = self.client.post(
+            '/lists/new', data={'item_text': 'A new list item'})
+        self.assertEqual(Item.objects.count(), 1)
+        self.assertEqual(Item.objects.first().text, 'A new list item')
+
+    def test_redirect_after_POST(self):
+        # redirect after a POST request to allow safe refresh
+        response = self.client.post(
+            '/lists/new', data={'item_text': 'A new list item'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/lists/unique-list/')
