@@ -2,13 +2,13 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 import unittest
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import time
 
 MAX_WAIT = 10
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Safari()
@@ -97,3 +97,21 @@ class NewVisitorTest(LiveServerTestCase):
         sara_url = self.browser.current_url
         self.assertRegex(sara_url, '/lists/.+')
         self.assertNotEqual(omar_url, sara_url)
+
+    def test_layout_and_styling(self):
+        # she visits the website
+        self.browser.get(self.live_server_url)
+        
+        # using 2013 macbook air in full screen
+        self.browser.set_window_size(1440, 900)
+
+        # she sees the input box in the middle
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2, 720, delta=10)
+
+        # she adds an element
+        self.input_item('Learn Nim and implement toy Docker')
+        self.check_for_row_in_list_table('1: Learn Nim and implement toy Docker')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        # and notices the input box is still nicely centered
+        self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2, 720, delta=10)
