@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>To-Do Lists</title>
+  </head>
+  <body>
+    <h1>{% block header_text %}{% endblock %}</h1>
+    <!-- all post requests submitted to home page and handled by home_page view-->
+    <!-- default i.e. without action, is to just send post request to current url-->
+    <form method="POST" action="{% block action_form %}{% endblock %}">
+      <input
+        name="item_text"
+        id="id_new_item"
+        placeholder="Enter a to-do item"
+      />
+      {% csrf_token %}
+    </form>
+  </body>
+  {% block table %} {% endblock %}
+</html>
