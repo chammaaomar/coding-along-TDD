@@ -18,6 +18,7 @@ from lists import views
 
 urlpatterns = [
     url(r'^$', views.home_page, name='home'),
-    url(r'^lists/unique-list/$', view=views.view_list, name='view_list'),
+    url(r'^lists/(\d+)/$', view=views.view_list, name='view_list'),
     url(r'^lists/new$', view=views.new_list, name='new_list'),
+    url(r'^lists/(\d+)/additem$', view=views.add_item, name='add_item')
 ]
