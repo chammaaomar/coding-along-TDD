@@ -4,6 +4,7 @@ from selenium.common.exceptions import WebDriverException
 import unittest
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import time
+import os
 
 MAX_WAIT = 10
 
@@ -12,7 +13,9 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Safari()
-
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:
+            self.live_server_url = f'http://{staging_server}'
     def tearDown(self):
         self.browser.quit()
 
@@ -103,15 +106,15 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
         
         # using 2013 macbook air in full screen
-        self.browser.set_window_size(1440, 900)
+        self.browser.set_window_size(1920, 1080)
 
         # she sees the input box in the middle
         inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2, 720, delta=10)
+        self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2, 960, delta=10)
 
         # she adds an element
         self.input_item('Learn Nim and implement toy Docker')
         self.check_for_row_in_list_table('1: Learn Nim and implement toy Docker')
         inputbox = self.browser.find_element_by_id('id_new_item')
         # and notices the input box is still nicely centered
-        self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2, 720, delta=10)
+        self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2, 960, delta=10)
