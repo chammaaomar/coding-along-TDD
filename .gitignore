@@ -6,3 +6,4 @@ superlists/__pycache__/
 *.pyc
 hog-venv/
 static/
+.env
