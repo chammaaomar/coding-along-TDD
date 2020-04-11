@@ -4,4 +4,3 @@ tdd-env
 .vscode/
 superlists/__pycache__/
 *.pyc
-lists/static
