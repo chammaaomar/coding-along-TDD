@@ -4,3 +4,5 @@ tdd-env
 .vscode/
 superlists/__pycache__/
 *.pyc
+hog-venv/
+static/
