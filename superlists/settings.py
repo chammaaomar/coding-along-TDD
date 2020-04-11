@@ -25,13 +25,13 @@ SECRET_KEY = 'k6r62zqrl(=n(w9ni$_(ri_^1-6rrl#n21s4azs_ofwb+y@yb8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '167.99.186.4', 'www.hedgehog.rocks', 'hedgehog.rocks']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '167.99.186.4', 'www.hedgehog.rocks', 'hedgehog.rocks']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -119,3 +119,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

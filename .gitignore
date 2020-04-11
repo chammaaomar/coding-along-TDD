@@ -5,3 +5,4 @@ tdd-env
 superlists/__pycache__/
 *.pyc
 hog-venv/
+static/
