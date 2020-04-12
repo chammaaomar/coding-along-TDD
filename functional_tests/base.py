@@ -20,8 +20,11 @@ class FunctionalTest(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def get_input_box(self):
+        return self.browser.find_element_by_id('id_text')
+
     def input_item(self, item_text):
-        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box = self.get_input_box()
         input_box.send_keys(item_text)
         input_box.send_keys(Keys.ENTER)
 

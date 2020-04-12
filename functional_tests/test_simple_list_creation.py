@@ -16,7 +16,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertIn('To-Do', header_text)
 
         # user is immediately prompted to enter a to-do item
-        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box = self.get_input_box()
         self.assertEqual(
             input_box.get_attribute('placeholder'),
             'Enter a to-do item'

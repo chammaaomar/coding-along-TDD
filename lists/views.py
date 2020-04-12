@@ -1,45 +1,39 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from lists.models import Item, List
+from lists.forms import ItemForm, EMPTY_ITEM_ERROR
 from django.core.exceptions import ValidationError
 # Create your views here.
 
 
 def home_page(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', context={
+        'form': ItemForm()
+    })
 
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
     items = Item.objects.filter(list=list_)
-    error = None
+    form = ItemForm()
     if request.method == 'POST':
-        new_item = Item(text=request.POST['item_text'], list=list_)
-        try:
-            new_item.full_clean()
-            new_item.save()
-            # redirect uses get_absolute_url method
+        form = ItemForm(data = request.POST)
+        if form.is_valid():
+            Item.objects.create(text=request.POST['text'], list=list_)
             return redirect(list_)
-        except ValidationError:
-            error = 'You cannot enter an empty item'
+    
     return render(request, 'list.html', context={
         'list': list_,
         'items': items,
-        'error': error
+        'form': form
     })
 
 
 def new_list(request):
-    if request.method == 'POST':
+    form = ItemForm(data=request.POST)
+    if form.is_valid():
         list_ = List.objects.create()
-        new_item_text = request.POST['item_text']
-        new_item = Item(text=new_item_text, list=list_)
-        try:
-            new_item.full_clean()
-            new_item.save()
-        except ValidationError:
-            list_.delete()
-            return render(request, 'home.html', context={
-                'error': 'You cannot enter an empty item'
-            })
-    return redirect(list_)
+        Item.objects.create(text=request.POST['text'], list=list_)
+        return redirect(list_)
+    else:
+        return render(request, 'home.html', context = {'form': form})
