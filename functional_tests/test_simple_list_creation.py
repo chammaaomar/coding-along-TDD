@@ -28,23 +28,23 @@ class NewVisitorTest(FunctionalTest):
         self.input_item('Buy Gopher plush')
 
         # and the page lists "1: buy gopher plush" as in item in a to-do list
-        self.check_for_row_in_list_table('1: Buy Gopher plush')
+        self.wait_for(self.check_for_row_in_list_table, '1: Buy Gopher plush')
         # There is still a textbox inviting the user to enter text
         # they enter
 
         self.input_item('Implement Redis using Go coroutines')
 
         # The page updates again, and now shows both items on her list
-        self.check_for_row_in_list_table('1: Buy Gopher plush')
-        self.check_for_row_in_list_table(
-            '2: Implement Redis using Go coroutines')
+        self.wait_for(self.check_for_row_in_list_table, '1: Buy Gopher plush')
+        self.wait_for(self.check_for_row_in_list_table,
+                      '2: Implement Redis using Go coroutines')
 
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # Omar logs on to create a new list and really wants to buy
         # a Gopher plush
         self.browser.get(self.live_server_url)
         self.input_item('Buy Gopher plush')
-        self.check_for_row_in_list_table('1: Buy Gopher plush')
+        self.wait_for(self.check_for_row_in_list_table, '1: Buy Gopher plush')
         omar_url = self.browser.current_url
         self.assertRegex(omar_url, '/lists/.+')
         # Another user logs in, Sara, and she really wants to buy
@@ -60,7 +60,8 @@ class NewVisitorTest(FunctionalTest):
         self.assertNotIn('Implement Redis using Go coroutines', page_text)
 
         self.input_item('Buy Smoko potato lamp')
-        self.check_for_row_in_list_table('1: Buy Smoko potato lamp')
+        self.wait_for(self.check_for_row_in_list_table,
+                      '1: Buy Smoko potato lamp')
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy Gopher plush', page_text)
 

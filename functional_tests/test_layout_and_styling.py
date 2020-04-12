@@ -17,8 +17,8 @@ class LayoutAndStylingTest(FunctionalTest):
 
         # she adds an element
         self.input_item('Learn Nim and implement toy Docker')
-        self.check_for_row_in_list_table(
-            '1: Learn Nim and implement toy Docker')
+        self.wait_for(self.check_for_row_in_list_table,
+                      '1: Learn Nim and implement toy Docker')
         inputbox = self.browser.find_element_by_id('id_new_item')
         # and notices the input box is still nicely centered
         self.assertAlmostEqual(

@@ -25,15 +25,17 @@ class FunctionalTest(StaticLiveServerTestCase):
         input_box.send_keys(item_text)
         input_box.send_keys(Keys.ENTER)
 
-    def check_for_row_in_list_table(self, row_text):
+    def wait_for(self, fn, *args):
         start_time = time.time()
         while True:
             try:
-                table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
-                self.assertIn(row_text, [row.text.strip() for row in rows])
-                return
+                return fn(*args)
             except (AssertionError, WebDriverException) as e:
                 if time.time() - start_time > MAX_WAIT:
                     raise e
-                time.sleep(0.5)
+                time.sleep(5)
+
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text.strip() for row in rows])
