@@ -21,7 +21,15 @@ def new_list(request):
     if request.method == 'POST':
         list_ = List.objects.create()
         new_item_text = request.POST['item_text']
-        Item.objects.create(text=new_item_text, list=list_)
+        new_item = Item(text=new_item_text, list=list_)
+        try:
+            new_item.full_clean()
+            new_item.save()
+        except:
+            list_.delete()
+            return render(request, 'home.html', context={
+                'error': 'You cannot enter an empty item'
+            })
     return redirect(f'/lists/{list_.id}/')
 
 

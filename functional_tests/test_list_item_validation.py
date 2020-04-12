@@ -9,7 +9,8 @@ class ItemValidationTest(FunctionalTest):
         self.input_item('')
         self.wait_for(
             lambda: self.assertEqual(
-                self.browser.find_element_by_class_name('has-error').text,
+                self.browser.find_element_by_class_name(
+                    'has-error').text.strip(),
                 'You cannot enter an empty item'
             )
         )
@@ -20,7 +21,7 @@ class ItemValidationTest(FunctionalTest):
 
         self.input_item('')
         self.wait_for(lambda: self.assertEqual(
-            self.browser.find_element_by_class_name('has-error').text,
+            self.browser.find_element_by_class_name('has-error').text.strip(),
             'You cannot enter an empty item'
         ))
         self.input_item('Get better at Django')

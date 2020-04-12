@@ -29,6 +29,18 @@ class NewListTest(TestCase):
         list_ = List.objects.first()
         self.assertRedirects(response, f'/lists/{list_.id}/')
 
+    def test_validation_errors_are_sent_back_to_home_page(self):
+        response = self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+        expected_error = 'You cannot enter an empty item'
+        self.assertContains(response, expected_error)
+
+    def test_invalid_list_items_are_not_saved(self):
+        item = self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(Item.objects.count(), 0)
+        self.assertEqual(List.objects.count(), 0)
+
 
 class NewItemTest(TestCase):
     def test_can_save_a_POST_request_to_an_existing_list(self):
