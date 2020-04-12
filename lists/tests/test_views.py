@@ -42,25 +42,6 @@ class NewListTest(TestCase):
         self.assertEqual(List.objects.count(), 0)
 
 
-class NewItemTest(TestCase):
-    def test_can_save_a_POST_request_to_an_existing_list(self):
-        list_ = List.objects.create()
-        response = self.client.post(f'/lists/{list_.id}/additem', {
-            'item_text': 'A new item for an existing list'
-        })
-        item = Item.objects.first()
-        self.assertEqual(Item.objects.count(), 1)
-        self.assertEqual(item.text, 'A new item for an existing list')
-        self.assertEqual(list_, item.list)
-
-    def test_redirects_to_list_view(self):
-        list_ = List.objects.create()
-        response = self.client.post(f'/lists/{list_.id}/additem', {
-            'item_text': 'A new item for an existing list'
-        })
-        self.assertRedirects(response, f'/lists/{list_.id}/')
-
-
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
@@ -88,3 +69,28 @@ class ListViewTest(TestCase):
         list_ = List.objects.create()
         response = self.client.get(f'/lists/{list_.id}/')
         self.assertEqual(response.context.get('list', None), list_)
+
+    def test_can_save_a_POST_request_to_an_existing_list(self):
+        list_ = List.objects.create()
+        response = self.client.post(f'/lists/{list_.id}/', {
+            'item_text': 'A new item for an existing list'
+        })
+        item = Item.objects.first()
+        self.assertEqual(Item.objects.count(), 1)
+        self.assertEqual(item.text, 'A new item for an existing list')
+        self.assertEqual(list_, item.list)
+
+    def test_POST_redirects_to_list_view(self):
+        list_ = List.objects.create()
+        response = self.client.post(f'/lists/{list_.id}/', {
+            'item_text': 'A new item for an existing list'
+        })
+        self.assertRedirects(response, f'/lists/{list_.id}/')
+
+    def test_cannot_POST_empty_item_to_existing_list(self):
+        list_ = List.objects.create()
+        response = self.client.post(
+            f'/lists/{list_.id}/', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'You cannot enter an empty item')
+        self.assertTemplateUsed(response, 'list.html')

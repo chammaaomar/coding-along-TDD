@@ -1,14 +1,12 @@
-{% extends 'base.html' %}
-{% block header_text %}Your To-Do list{% endblock %}
-{% block action_form %}/lists/{{list.id}}/additem{% endblock %}
-{% block table %}
-<table id='id_list_table' class="table">
+{% extends 'base.html' %} {% block header_text %}Your To-Do list{% endblock %}
+{% block action_form %}/lists/{{list.id}}/{% endblock %} {% block table %}
+<table id="id_list_table" class="table">
   {% for item in items %}
-    <tr>
-      <td>
-        {{forloop.counter}}: {{item.text}}
-      </td>
-    </tr>
+  <tr>
+    <td>
+      {{forloop.counter}}: {{item.text}}
+    </td>
+  </tr>
   {% endfor %}
 </table>
 {% endblock %}
