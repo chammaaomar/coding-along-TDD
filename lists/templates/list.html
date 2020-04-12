@@ -1,5 +1,7 @@
-{% extends 'base.html' %} {% block header_text %}Your To-Do list{% endblock %}
-{% block action_form %}/lists/{{list.id}}/{% endblock %} {% block table %}
+{% extends 'base.html' %}
+{% block header_text %}Your To-Do list{% endblock %}
+{% block action_form %}{% url 'view_list' list.id %}{% endblock %}
+{% block table %}
 <table id="id_list_table" class="table">
   {% for item in items %}
   <tr>
