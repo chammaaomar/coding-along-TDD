@@ -5,6 +5,11 @@ EMPTY_ITEM_ERROR = 'You cannot enter an empty item'
 
 class ItemForm(forms.models.ModelForm):
 
+    def save(self, for_list):
+        # database object being modified / created
+        self.instance.list = for_list
+        return super().save()
+
     class Meta:
         model = Item
         fields = ('text',)
