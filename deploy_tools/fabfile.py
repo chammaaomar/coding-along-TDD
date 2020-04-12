@@ -7,7 +7,7 @@ REPO_URL = "https://github.com/chammaaomar/coding-along-TDD.git"
 
 def deploy():
     site_folder = f'/home/{env.user}/sites/{env.host}'
-    run(f-'mkdir -p {site_folder}')
+    run(f'mkdir -p {site_folder}')
     with cd(site_folder):
         _get_latest_source()
         _update_virtualenv()
@@ -31,7 +31,7 @@ def _update_virtualenv():
     run('./virtualenv/bin/pip install -r requirements.txt')
 
 
-def create_or_update_dotenv():
+def _create_or_update_dotenv():
     append('.env', 'DJANGO_DEBUG_FALSE=yes')
     append('.env', f'SITENAME={env.host}')
     current_content = run('cat .env')
