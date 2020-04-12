@@ -18,7 +18,8 @@ def view_list(request, list_id):
         try:
             new_item.full_clean()
             new_item.save()
-            return redirect(f'/lists/{list_.id}/')
+            # redirect uses get_absolute_url method
+            return redirect(list_)
         except ValidationError:
             error = 'You cannot enter an empty item'
     return render(request, 'list.html', context={
@@ -41,4 +42,4 @@ def new_list(request):
             return render(request, 'home.html', context={
                 'error': 'You cannot enter an empty item'
             })
-    return redirect(f'/lists/{list_.id}/')
+    return redirect(list_)

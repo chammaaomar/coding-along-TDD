@@ -44,6 +44,10 @@ class NewListTest(TestCase):
 
 class ListViewTest(TestCase):
 
+    def test_get_absolute_url(self):
+        list_ = List.objects.create()
+        self.assertEqual(f'/lists/{list_.id}/', list_.get_absolute_url())
+
     def test_uses_list_template(self):
         list_ = List.objects.create()
         response = self.client.get(f'/lists/{list_.id}/')
