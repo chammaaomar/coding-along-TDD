@@ -4,7 +4,7 @@ with [Obey the Testing Goat](https://www.obeythetestinggoat.com)
 
 ## website
 
-Deployed on DigitalOcean :ocean: :dizzy:. For some reason I got the domain name [hedgehog.rocks](http://www.hedgehog.rocks).
+Deployed on DigitalOcean :ocean: :dizzy:. For some reason I got the domain name [hedgehog.rocks](http://hedgehog.rocks).
 I'm stuck trying to find material design hedgehog themes. Oh well... :weary:
 
 ## Immediate TODO
