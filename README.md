@@ -1,5 +1,5 @@
 # coding-along-TDD
-Learning Test-Driven Development, automated testing with Selenium, Django, deployments ... *etc*
+Learning Test-Driven Development, automated testing with Selenium, Django, deployments, nginx and gunicorn ... *etc*
 with [Obey the Testing Goat](https://www.obeythetestinggoat.com)
 
 ## website
@@ -9,5 +9,6 @@ I'm stuck trying to find material design hedgehog themes. Oh well... :weary:
 
 ## Immediate TODO
 * Add https, and redirect http to https
+* Properly proxy requests made to _www_.
 * User authentication with OAuth 2.0
 * Show user lists that belong to them
