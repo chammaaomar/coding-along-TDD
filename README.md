@@ -1,4 +1,4 @@
-# coding-along-TDD
+# coding-along-TDD :goat:
 Learning Test-Driven Development, automated testing with Selenium, Django, deployments, nginx and gunicorn ... *etc*
 with [Obey the Testing Goat](https://www.obeythetestinggoat.com)
 
